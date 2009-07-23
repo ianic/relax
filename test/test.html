@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>JavaScript unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  
+  <script src="/_utils/relax/vendor/prototype/prototype.js"     type="text/javascript"></script>
+  <script src="/_utils/relax/vendor/prototype/scriptaculous.js" type="text/javascript"></script> 
+  <script src="/_utils/relax/vendor/prototype/unittest.js" type="text/javascript"></script> 
+  
+  <script src="/_utils/relax/vendor/couch/couch.js"             type="text/javascript"></script> 
+  <script src="/_utils/relax/vendor/couch/json2.js"             type="text/javascript"></script>     
+
+  <script src="/_utils/relax/lib/relax.js"                      type="text/javascript" ></script>        
+  <script src="/_utils/relax/lib/binder.js"                     type="text/javascript" ></script>    
+  <script src="/_utils/relax/lib/model_base.js"                 type="text/javascript" ></script>    
+  <script src="/_utils/relax/lib/controller_base.js"            type="text/javascript" ></script>
+                                                                                             
+  <script src="/_utils/relax/app/app.js"                        type="text/javascript" ></script>
+  <script src="/_utils/relax/app/model/racun.js"                type="text/javascript" ></script>
+  <script src="/_utils/relax/app/model/stavka.js"               type="text/javascript" ></script>
+  <script src="/_utils/relax/app/model/partner.js"              type="text/javascript" ></script>
+  <script src="/_utils/relax/app/controller/racun.js"           type="text/javascript" ></script>
+  
+  <link rel="stylesheet" href="../stylesheets/unittest.css" type="text/css" />
+</head>
+<body>
+
+<div id="content">
+
+  <div id="header">
+    <h1>JavaScript unit test file</h1>
+    <p>
+      This file tests <strong></strong>.
+    </p>
+  </div>
+
+  <!-- Log output -->
+  <div id="testlog"> </div>
+  
+</div>
+
+<script>
+// <![CDATA[
+
+  new Test.Unit.Runner({
+        
+    db: null,   
+                
+    setup: function() {
+      var dbName = 'unittest2'
+      this.db = new CouchDB(dbName);
+      if (CouchDB.allDbs().include(dbName)){
+        this.db.deleteDb();
+      }
+      this.db.createDb();
+    },
+    teardown: function() {},
+    
+    test: function() { with(this) {
+      var id = this.db.save({ prvi: "ono je prvi objeku snimljeni iz test-a", drugi: 123}).id;
+      var o = this.db.open(id);
+      assertEqual(123, o.drugi);
+      o.drugi = 456;
+      this.db.save(o);
+      //o = this.db.open(id);
+      assertEqual(456, o.drugi);
+      this.db.deleteDoc(o);
+    }},          
+        
+    testRandomRacuni: function(){ with(this){
+      for(var i=0; i<10; i++){
+        var racun = { 
+          pdv: 10, 
+          stavke: [],
+          partner: randomPartner()
+        }                              
+        var brojStavki = Math.random() * 10;
+        for(var j=0; j < brojStavki; j++)
+          racun.stavke.push(randomStavka());
+        app.model.Racun.call(racun);  
+        this.db.save(racun);    
+      }
+    }}
+               
+    
+  }, "Tecaj");
+  
+  function randomPartner(){
+    var partneri = [
+      { naziv: "Google.com",    adresa: "Silicon Valley 123/45", porezniBroj: 12345 },
+      { naziv: "Microsoft.com", adresa: "Silicon Valley 123/45", porezniBroj: 12345 },
+      { naziv: "Amazon.com",    adresa: "Silicon Valley 123/45", porezniBroj: 12345 }, 
+      { naziv: "Yahoo.com",     adresa: "Silicon Valley 123/45", porezniBroj: 12345 } ];   
+      
+    return partneri[parseInt(Math.random() * partneri.length)]
+  }   
+  function randomStavka(){
+    var stavke = [
+      { naziv: "iskopavanje kanala", jedinicaMjere: "metar", cijena: 23.12 },
+      { naziv: "izrada pregradnih zidova", jedinicaMjere: "m2", cijena: 100 },
+      { naziv: "betoniranje vertikalnih serklaza", jedinicaMjere: "m3", cijena: 151.4 },
+      { naziv: "kopanje temelja", jedinicaMjere: "m3", cijena: 12.34 }
+        ];   
+      
+    var stavka = stavke[parseInt(Math.random() * stavke.length)];
+    stavka.kolicina = Math.random() * 100;
+    return stavka;
+  }
+// ]]>
+</script>
+</body>
+</html>

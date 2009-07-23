@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>JavaScript unit test file</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  
+  <script src="../vendor/prototype/prototype.js"     type="text/javascript"></script>
+  <script src="../vendor/prototype/scriptaculous.js" type="text/javascript"></script> 
+  <script src="../vendor/prototype/unittest.js"      type="text/javascript"></script>
+  <script src="../vendor/gears/gears_init.js"        type="text/javascript"></script>
+               
+  <script src="../lib/relax.js"                      type="text/javascript" ></script>        
+  <script src="../app/app.js"                        type="text/javascript" ></script>
+
+  
+  <link rel="stylesheet" href="../stylesheets/unittest.css" type="text/css" />
+</head>
+<body>
+
+<div id="content">
+
+  <div id="header">
+    <h1>JavaScript unit test file</h1>
+    <p>
+      This file tests <strong></strong>.
+    </p>
+  </div>
+
+  <!-- Log output -->
+  <div id="testlog"> </div>
+  
+</div>
+
+<script>
+// <![CDATA[           
+
+  relax.db.init('gears-test', true);
+  new Test.Unit.Runner({
+        
+               
+    setupTests: function() {},
+    
+    teardown: function() {},    
+   
+    
+    testReadAll: function() { with(this) {  
+      
+      for(var i=0; i < 21; i++) {   
+        var racun = randomRacun();       
+        racun.save();
+      }
+      
+      var paginator = new relax.db.Paginator('app.model.Racun', 10);
+      assertEqual(21, paginator.count);
+      assertEqual(true, paginator.hasMore());
+      assertEqual(10, paginator.nextPage().length);
+      assertEqual(true, paginator.hasMore());
+      assertEqual(10, paginator.nextPage().length);
+      assertEqual(true, paginator.hasMore());
+      assertEqual(1, paginator.nextPage().length);
+      assertEqual(false, paginator.hasMore());
+      paginator.objects.each(function(obj){ console.log(obj); })
+      
+      
+//      objects.each(function(obj){ console.log(obj); })
+    }},
+    
+    testSaveUpdate: function() {with(this){
+      var racun = randomRacun();
+      assertEqual(racun._id, null);
+      
+      racun.save();            
+      assertNotEqual(racun._id, null);
+      
+      var racun2 = relax.db.read(racun._id);
+      assertEqual(racun._id, racun2._id);       
+    }},
+    
+    testInsertWithExistingId: function() { with(this) {
+      var racun = randomRacun();       
+      racun.save();
+      
+      relax.db.db.execute("delete from documents where id = ?", [racun._id]);
+      racun.save();
+      var racun2 = relax.db.read(racun._id);
+      assertNotNull(racun2);
+      
+      racun = randomRacun();
+      racun._id = 'pero';
+      racun.save();
+      
+      assertEqual(Object.toJSON(racun), Object.toJSON(relax.db.read('pero')));
+      
+    }}
+        
+        
+  }, "");         
+  
+  function randomRacun(){
+    var racun = { 
+      pdv: 10, 
+      stavke: [],
+      partner: randomPartner()
+    }                              
+    var brojStavki = Math.random() * 10;
+   
+    for(var j=0; j < brojStavki; j++)
+      racun.stavke.push(randomStavka());   
+      
+    app.model.Racun.call(racun); 
+    return racun;  
+  }         
+  
+  function randomPartner(){
+    var partneri = [
+      { naziv: "Google.com",    adresa: "Silicon Valley 123/45", porezniBroj: 12345 },
+      { naziv: "Microsoft.com", adresa: "Silicon Valley 123/45", porezniBroj: 12345 },
+      { naziv: "Amazon.com",    adresa: "Silicon Valley 123/45", porezniBroj: 12345 }, 
+      { naziv: "Yahoo.com",     adresa: "Silicon Valley 123/45", porezniBroj: 12345 } ];   
+      
+    return partneri[parseInt(Math.random() * partneri.length)];
+  }   
+  function randomStavka(){
+    var stavke = [
+      { naziv: "iskopavanje kanala", jedinicaMjere: "metar", cijena: 23.12 },
+      { naziv: "izrada pregradnih zidova", jedinicaMjere: "m2", cijena: 100 },
+      { naziv: "betoniranje vertikalnih serklaza", jedinicaMjere: "m3", cijena: 151.4 },
+      { naziv: "kopanje temelja", jedinicaMjere: "m3", cijena: 12.34 }
+        ];   
+      
+    var stavka = stavke[parseInt(Math.random() * stavke.length)];
+    stavka.kolicina = Math.random() * 100;
+    return stavka;
+  }
+// ]]>
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>  
+    <link rel="stylesheet" href="/_utils/relax/stylesheets/application.css" type="text/css" />  
+    
+    <script src="/_utils/relax/vendor/prototype/prototype.js"     type="text/javascript"></script>
+    <script src="/_utils/relax/vendor/prototype/scriptaculous.js" type="text/javascript"></script> 
+    
+    <script src="/_utils/relax/vendor/couch/couch.js"             type="text/javascript"></script> 
+    <script src="/_utils/relax/vendor/couch/json2.js"             type="text/javascript"></script>     
+
+    <script src="/_utils/relax/lib/relax.js"                      type="text/javascript" ></script>                                                                                               
+    <script src="/_utils/relax/app/app.js"                        type="text/javascript" ></script>
+        
+    <script type="text/javascript" charset="utf-8"> 
+    
+    
+      
+      var controller;                      
+      function start(){
+                
+        racun = { pdv: 10, datum: "2008-08-16T13:28:11Z", 
+          stavke: [
+            {naziv: "stavka 1", kolicina:100, cijena:1.234}, 
+            {naziv: "stavka 2", kolicina:200, cijena:1.234}
+          ],
+          partner: { naziv: "Nektar", adresa: "Zugci 5a, Samoborski Novaki", porezniBroj: 12345 }
+        }                                      
+        
+        relax.db = new CouchDB("nektar_test");
+        new app.controller.RacunList();        
+      }
+                  
+    </script>
+  </head>
+  <body onload="start()"> 
+    <div class="layoutTop"> </div>
+       
+    <table cellspacing="0" cellpadding="0" style="table-layout: fixed; width:100%; overflow:hidden; border-top: 1px solid #C9D7F1; border-bottom: 1px solid #C9D7F1; ">
+      <col width="*" height="100%"/>
+      <col style="width: 32ex;"/> 
+      <tr><td style="background-color:#E8EEF7;height:40px" colspan="2"> </td></tr> 
+      <tr>
+        <td style="border: 1px solid #C9D7F1; padding: 10px;" valign="top">
+          <div id="forms" style="min-height: 400px; overflow: hidden"> </div>
+        </td>
+        <td style="background-color:#E8EEF7; padding-left:10px;" valign="top"> 
+          <div id="formsIndex" > </div> 
+        </td>
+      </tr>
+      <tr><td style="background-color:#E8EEF7; height:80px;" colspan="2"> </td></tr>
+    </table>
+        
+             
+    <div id="templateRacuniList" style="display:none">  
+        <table border="1">                
+          <thead>
+            <tr>
+              <th>partner</th>
+              <th>datum</th>
+              <th>iznos</th>
+            </tr>
+          </thead>
+          <tbody collection="racuni">
+            <tr>
+              <td property="partner.naziv"> </td>
+              <td property="datum"> </td>
+              <td align="right" property="iznos"> </td>
+              <td><a href="#" action="edit">edit</a></td>
+            </tr>            
+          </tbody>
+        </table>
+        Rows: <span property="rows" binderType="integer"> </span> / <span property="totalRows" binderType="integer"> </span>
+        <a href="" action="more">more</a>      
+    </div>
+                             
+    <div id="templateRacunEdit" style="display:none">
+        <input type="text" property="datum"> 
+        <input type="text" property="rokPlacanja" binderType="integer">
+        <span property="valuta"> </span>
+        <br/> 
+      
+      
+        <div id="partner" style="border: solid 1px">
+          <input type="text" property="partner.naziv"> <br/>
+          <input type="text" property="partner.adresa"> <br/>
+          <input type="text" property="partner.porezniBroj">
+        </div>
+
+
+        <a action="addStavka" href="#">nova stavka</a>
+        
+        <table border="0">             
+          <tbody collection="stavke">  
+             <tr>
+                <td><input type="text" property="naziv"></td>
+                <td><input type="text" property="kolicina"></td>
+                <td><input type="text" property="cijena"></td>
+                <td><span property="iznos"> </span></td> 
+                <td><a href="#" action="removeStavka">brisi</a></td>
+              </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="3">ukupno:</td>
+              <td><span property="osnovica"> </span></td>
+            </tr>
+            <tr>
+              <td colspan="2">pdv:</td>            
+              <td><input type="text" property="pdv"></td>
+              <td><span property="pdvIznos"> </span></td>
+            </tr>
+            <tr>
+              <td colspan="3">iznos:</td>
+              <td><span property="iznos"> </span></td>
+            </tr> 
+          </tfoot>
+        </table>                     
+
+        pdv opet  <span property="pdv" > </span>  da pokazem da jedan property mozde biti bindan na vise mjesta<br/>
+
+        <input action="save" type="button" value="save">
+    </div>
+              
+  </body>
+</html>   
+
