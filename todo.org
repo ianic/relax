@@ -1,0 +1,3 @@
+Ne svidja mi se sto collection isto glumi neki model pa se propertiji bindaju.
+RacunList controller mora izmisliti interni model i tamo mijenjati propertije ne bi li se oni promjenili na view-u.
+Zasto se ne bi mogli i propertiji controller-a bindat.

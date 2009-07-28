@@ -4,8 +4,8 @@ app.model.Racun = function(){
   this.pdv = (this.pdv == null) ? 22 : this.pdv;
   this.stavke = this.stavke || [];
   this.partner = this.partner || {};    
-	this.datum = this.datum || new Date();
-	this.rokPlacanja = (this.rokPlacanja == null) ? 15 : this.rokPlacanja;
+  this.datum = this.datum || new Date();
+  this.rokPlacanja = (this.rokPlacanja == null) ? 15 : this.rokPlacanja;
 	
   //TODO ovo treba prebaciti u model base
   this.datum = (relax.getType(this.datum) == "string") ? Date.fromJSON(this.datum) : this.datum || new Date();
@@ -16,7 +16,7 @@ app.model.Racun = function(){
   app.model.Partner.call(this.partner, this);
 																																															
   this.createStavka = function(stavka){
-		var stavka = new app.model.Stavka(this);         
+    var stavka = new app.model.Stavka(this);         
     this.stavke.push(stavka);
     return stavka;
   }      
@@ -39,7 +39,8 @@ app.model.Racun = function(){
   }
 
   this.valuta = function(){
-		return new Date(this.datum.getTime() + this.rokPlacanja * 1000 * 60 * 60 * 24)
+    //TODO naprvi fukciju addDays na Date objektu
+    return new Date(this.datum.getTime() + this.rokPlacanja * 1000 * 60 * 60 * 24)
   } 
           
 }
