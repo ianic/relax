@@ -4,11 +4,10 @@
 <head>
   <title>JavaScript unit test file</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <link rel="stylesheet" href="../stylesheets/unittest.css" type="text/css" />  
+  <link rel="stylesheet" href="../vendor/jsunittest/unittest.css" type="text/css" />  
   
-  <script src="../vendor/prototype/prototype.js"     type="text/javascript"></script>      
-  <script src="../vendor/prototype/scriptaculous.js" type="text/javascript"></script>      
-  <script src="../vendor/prototype/unittest.js"      type="text/javascript"></script> 
+  <script src="../vendor/prototype/prototype.js"     type="text/javascript"></script>        
+  <script src="../vendor/jsunittest/jsunittest.js"   type="text/javascript"></script> 
   
   <script src="../lib/js_extensions/string.js"       type="text/javascript"></script> 
   <script src="../lib/js_extensions/number.js"       type="text/javascript"></script> 
@@ -23,16 +22,20 @@
   </div>                                        
   <div id="testlog"> </div>  
 </div>
-             
-<script>
 
-  new Test.Unit.Runner({         
-                
-    setup: function() { 
-    },  
-           
-    teardown: function() {},
+<script type="text/javascript">
+// <![CDATA[
+  new Test.Unit.Runner({
+    setup: function() {
+    },
     
+    teardown: function() {      
+    },
+    
+    testTruth: function() { with(this) {
+      assert(true);
+    }},  
+
     testNumberToCurrency: function() { with(this) {                          
       assertEqual('234', (234).toCurrency());                         
       assertEqual('1.234', 1234.0.toCurrency());                       
@@ -40,7 +43,7 @@
       assertEqual('1.234,56', 1234.56.toCurrency());
       assertEqual('1.234,567', 1234.567.toCurrency());
     }},
-    
+
     testStringToNumber: function() { with(this) {
       assertEqual(123, '123'.toNumber());
       assertEqual(123.23, '123,23'.toNumber());
@@ -50,30 +53,30 @@
       assertEqual(1234567.23, '1.234.567.23'.toNumber());
       assertEqual(1234567.23, '1,234,567,23'.toNumber());
     }},
-    
+
     testStringIsJsonDate: function() {with(this){
       assert(!"pero".isJSONDate());               
       assert(!"2009-07-31".isJSONDate());
       assert(!"2009-07-31T11:22:3aZ".isJSONDate());
-      
+
       assert("2009-07-31T00:00:00Z".isJSONDate());
       assert("2009-07-31T11:22:33Z".isJSONDate());      
     }},
-    
+
     testDateFromJson: function() {with(this){
       assertEqual((new Date(2009, 06, 31)).getTime(), Date.fromJSON("2009-07-31T00:00:00Z").getTime());
       assertNull(Date.fromJSON("2009-07-31T00:00:0Z"));
       assertNull(Date.fromJSON("something"));
     }},                                  
-    
+
     testStringToDate: function() {with(this){
       assertEqual((new Date(2009, 06, 31)).getTime(), "2009-07-31T00:00:00Z".toDate().getTime());      
       assertNull("something".toDate());
-    }}
-                                                                       
-    
-  }, "Test");  
-  
+    }} 
+            
+  }); 
+// ]]>
 </script>
+
 </body>
 </html>
