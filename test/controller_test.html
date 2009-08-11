@@ -92,8 +92,8 @@
   
   
   <script type="text/javascript">
-  // <![CDATA[ 
-        
+  // <![CDATA[    
+          
    new Test.Unit.Runner({
      setup: function() { with(this) {    
      }},
@@ -101,7 +101,7 @@
      teardown: function() { with(this) {
      }},
             
-     testSimpleTemplateParsing: function() { with(this) {
+     testTemplateParsing: function() { with(this) {
        var template = new relax.controller.Template('#personTemplate', '#container');             
        assertNotUndefined(template.findProperty('firstName'));
        assertNotUndefined(template.findProperty('lastName'));
@@ -110,7 +110,7 @@
        assertUndefined(template.findProperty('pero'));                       
      }}, 
      
-     testControllerBining: function() { with(this) {       
+     testControllerBinding: function() { with(this) {       
        var model = { 
             firstName: "Pero", 
             lastName: "Zdero", 
@@ -120,8 +120,9 @@
        relax.model.Base.call(model);
        var controller = new relax.controller.Base('#personTemplate', '#container', model);       
        
-       
-       
+       controller.updateElement('firstName', 'Igor')
+       assert('Igor', model.name);
+       assert('Igor Zdero', model.fullName());
      }},
 
 
