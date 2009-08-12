@@ -46,17 +46,17 @@
   <script src="../lib/model/base.js"  type="text/javascript"></script>     
     
   <style type="text/css" media="screen">
-    label {          
+    .person label {          
       margin-top: 0px;
       display: block;
     }         
-    input {
+    .person input {
       width: 194px;
       margin-bottom: 8px;
     }
-    .button {
+    .person .button {
       width: auto;
-    }
+    }    
     .person { 
       border: dotted 1px;
       padding: 10px 10px 2px 10px;
@@ -75,7 +75,8 @@
   
   <div id="container" > </div>
                           
-  <div style="display:none;">
+  <div style="display:none;">   
+    
     <div id="personTemplate">
       <div class="person">
         <label for="firstname">first name</label><input type="text" property="firstName">
@@ -88,6 +89,50 @@
         </div>
       </div>
     </div>    
+    
+    <div id="personTemplate2">
+      <div style="border: dotted 1px; width:600px; padding:10px; margin-top:10px;">
+        <table border="0" cellspacing="4" cellpadding="0">
+          <tr>
+            <th>first name</th>
+            <td><input type="text" property="firstName"> </td>
+          </tr>
+          <tr>
+            <th>last name</th>
+            <td><input type="text" property="lastName"> </td>
+          </tr>          
+          <tr>
+            <th>children</th>
+            <td>
+              <table border="1"> 
+                <thead>
+                  <tr>
+                      <th>Name</th>
+                      <th>Age</th>
+                  </tr>  
+                </thead>
+                <tbody children='#'> 
+                </tbody>
+                <tfoot>
+                  <td>sum:</td>
+                  <td property="sumChildrenAge">-</td>
+                </tfoot>
+              </table>
+              </table>               
+            </td>
+          </tr>   
+      </div>
+    </div>
+           
+    <table>
+      <tbody id="childTemplate">
+        <tr>
+          <td><input type="text" property='firstName'> </td>
+          <td><input type="text" property='age'> </td>
+        </tr>
+      </tbody>
+    </table>
+    
   </div>
   
   
@@ -123,7 +168,40 @@
        controller.updateElement('firstName', 'Igor')
        assert('Igor', model.name);
        assert('Igor Zdero', model.fullName());
+     }}, 
+     
+     testParentChildControllers: function() { with(this) {
+       var model = { 
+         firstName: "Igor", 
+         lastName: "Anic", 
+         children: [
+            {firstName: 'Nina', age: 8},
+            {firstName: 'Zara', age: 6}
+          ],                            
+          onChildChanged: function() { 
+            this.sumChildrenAge = this.children.inject(0, function(sum, child){ return sum + parseFloat(child.age); }) 
+            this.changed();
+          },
+          sumChildrenAge: 0
+         };
+       relax.model.Base.call(model);
+       
+       var controller = new relax.controller.Base('#personTemplate2', '#container', model);
+       var childrenRootElement = controller.template.rootElement.find('[children]')
+       var childrenControllers = [];
+       
+       model.children.each(function(child){
+         childrenControllers.push(new relax.controller.Base('#childTemplate', childrenRootElement, child));
+       });
+       
+       childrenControllers[0].updateElement('age', 9);
+       assertEqual(15, model.sumChildrenAge);
+       childrenControllers[1].updateElement('age', 7.5);
+       assertEqual(16.5, model.sumChildrenAge);
+               
      }},
+
+     
 
 
    }, {testLog: "testlog"});

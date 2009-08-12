@@ -80,7 +80,30 @@
       assertEqual('Anic', model.last);                         
       assertEqual('Igor Anic', model.getProperty('fullName'));
             
-    }},
+    }},        
+    
+    testModelWithChildModels: function() { with(this) {
+      var model = { 
+        firstName: "Igor", 
+        lastName: "Anic", 
+        children: [
+           {firstName: 'Nina', age: 8},
+           {firstName: 'Zara', age: 6}
+         ],                            
+         onChildChanged: function() { this.sumChildrenAge = this.children.inject(0, function(sum, child){ return sum + parseInt(child.age); }) }
+        };
+      relax.model.Base.call(model);
+                                                     
+
+      assertEqual(model, model.children[0].__parent);  
+      assertEqual(model, model.children[1].__parent);  
+      
+      assertEqual(14, model.children.inject(0, function(sum, child){ return sum + child.age; }));
+      assertUndefined(model.sumChildrenAge);
+      model.children[0].setProperty('age', 9);
+      assertEqual(15, model.sumChildrenAge)
+      
+    }}
 
     
      
